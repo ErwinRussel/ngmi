@@ -1,0 +1,75 @@
+# ngmi config. All thresholds live here, so tune them in one place.
+
+[positions]                        # what you hold: drawdown + trend tiles
+crypto = ["bitcoin", "ethereum"]   # CoinGecko ids
+stocks = []                        # Yahoo tickers, e.g. ["NVDA", "TSLA"]
+
+[watch]                            # context only: trend tiles
+crypto = []
+stocks = ["GC=F", "SI=F"]          # gold, silver futures
+
+# Take-profit plans: decide your exits now, while you're calm. One per position symbol.
+# `gain` is % above entry, `sell` is % of the original position. After you sell a step,
+# bump `done` so the tile moves on to the next one.
+#
+# [plans.bitcoin]
+# entry = 40000
+# done = 0
+# steps = [
+#   { gain = 100, sell = 20 },
+#   { gain = 200, sell = 25 },
+#   { gain = 300, sell = 25 },
+# ]
+
+[signals.plan]
+enabled = true
+amber_within = 10  # amber when the next step's price is this % away
+
+[signals.drawdown]
+enabled = true
+window_days = 90   # rolling high lookback
+amber = 10         # % below the rolling high
+red = 20
+
+[signals.moving_average]
+enabled = true
+fast = 50          # amber below this
+slow = 200         # red below this
+
+[signals.weekly_rsi]
+enabled = true
+period = 14
+amber = 70
+red = 80           # weekly RSI above 80 has marked cycle tops
+
+[signals.pi_cycle]
+enabled = true
+symbol = "BTC-USD" # Yahoo, for the 350d+ history it needs
+amber = 90         # 111d MA as % of 2x the 350d MA
+red = 100          # the cross
+
+[signals.fear_greed]
+enabled = true
+amber = 60         # greed building
+red = 75           # extreme greed: exit warning
+
+[signals.funding]
+enabled = true
+instrument = "BTC-USDT-SWAP"   # OKX perpetual
+avg_days = 7       # "persistently" = average over this many days
+amber = 15         # annualized %, ~11% is the neutral baseline
+red = 30
+
+[signals.liquidity]
+enabled = true
+series = "WALCL"   # Fed balance sheet; or "M2SL" for M2 money supply
+lookback_days = 90
+amber = 0          # % change; below 0 = contracting
+red = -2
+
+[signals.rates]
+enabled = true
+series = "DGS10"   # US 10-year Treasury yield
+lookback_days = 30
+amber = 25         # rise in basis points over the lookback
+red = 50
