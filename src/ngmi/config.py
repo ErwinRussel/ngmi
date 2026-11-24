@@ -85,10 +85,31 @@ class WeeklyRsiConfig(Thresholds):
     red: float = 80
 
 
+class AttentionConfig(Thresholds):
+    articles: list[str] = Field(default_factory=lambda: ["Bitcoin", "Cryptocurrency"])  # English Wikipedia titles
+    avg_days: int = Field(default=7, gt=0)
+    amber: float = 2  # 7d avg pageviews as a multiple of the 1y median
+    red: float = 3
+
+
 class PiCycleConfig(Thresholds):
     symbol: str = "BTC-USD"  # Yahoo: long daily history, unlike CoinGecko's free year
     amber: float = 90  # 111d MA as % of 2x the 350d MA
     red: float = 100
+
+
+class VixConfig(LowIsBadThresholds):
+    symbol: str = "^VIX"
+    amber: float = 17
+    red: float = 15  # sell zone: complacency
+    scale_in: float = 25
+    buy: float = 35
+
+    @model_validator(mode="after")
+    def _zones(self):
+        if not self.amber < self.scale_in < self.buy:
+            raise ValueError("vix: need amber < scale_in < buy")
+        return self
 
 
 class PlanSignalConfig(BaseModel):
@@ -132,6 +153,8 @@ class Signals(BaseModel):
     rates: RatesConfig = Field(default_factory=RatesConfig)
     weekly_rsi: WeeklyRsiConfig = Field(default_factory=WeeklyRsiConfig)
     pi_cycle: PiCycleConfig = Field(default_factory=PiCycleConfig)
+    vix: VixConfig = Field(default_factory=VixConfig)
+    attention: AttentionConfig = Field(default_factory=AttentionConfig)
     plan: PlanSignalConfig = Field(default_factory=PlanSignalConfig)
 
 

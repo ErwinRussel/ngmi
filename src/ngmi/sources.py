@@ -7,6 +7,7 @@ from ngmi.adapters.base import SeriesAdapter, SymbolAdapter
 from ngmi.adapters.coingecko import CoinGeckoAdapter
 from ngmi.adapters.fred import FredAdapter
 from ngmi.adapters.okx import OkxFundingAdapter
+from ngmi.adapters.wikipedia import WikipediaPageviewsAdapter
 from ngmi.adapters.yahoo import YahooAdapter
 
 
@@ -19,6 +20,7 @@ class Sources:
     stocks: SymbolAdapter
     funding: SymbolAdapter
     fred: SymbolAdapter
+    pageviews: SymbolAdapter
 
 
 def live_sources() -> Sources:
@@ -28,6 +30,7 @@ def live_sources() -> Sources:
         stocks=YahooAdapter(),
         funding=OkxFundingAdapter(),
         fred=FredAdapter(),
+        pageviews=WikipediaPageviewsAdapter(),
     )
 
 

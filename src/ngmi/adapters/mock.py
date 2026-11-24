@@ -67,6 +67,7 @@ def demo_sources() -> Sources:
         "GC=F": scripted_series([(300, 25), (65, 9)], 2_600, seed=5, noise=0.006),
         "SI=F": scripted_series([(300, 30), (40, 6), (25, -9)], 30, seed=6, noise=0.01),
         "BTC-USD": scripted_series([(650, 0), (120, 200), (130, 60)], 17_300, seed=12, noise=0.02),
+        "^VIX": waypoint_series([(0, 18), (200, 14), (260, 38), (300, 22), (364, 16)], seed=13, noise=1.0).clip(9),
     }
     funding = waypoint_series([(0, 10), (60, 14), (85, 24), (99, 21)], seed=8, noise=3)
     fred = {
@@ -74,10 +75,15 @@ def demo_sources() -> Sources:
         "M2SL": scripted_series([(1095, 8)], 21_000, seed=10, noise=0.0003),
         "DGS10": waypoint_series([(0, 4.2), (1040, 4.6), (1095, 5.15)], seed=11, noise=0.03),
     }
+    pageviews = {
+        "Bitcoin": waypoint_series([(0, 9_000), (500, 7_000), (650, 6_500), (680, 24_000), (700, 15_000)], seed=14, noise=600),
+        "Cryptocurrency": waypoint_series([(0, 2_500), (650, 2_200), (700, 2_900)], seed=15, noise=200),
+    }
     return Sources(
         fear_greed=MockSeriesAdapter(fear_greed),
         crypto=MockSymbolAdapter(crypto),
         stocks=MockSymbolAdapter(stocks),
         funding=MockSymbolAdapter({"BTC-USDT-SWAP": funding}),
         fred=MockSymbolAdapter(fred),
+        pageviews=MockSymbolAdapter(pageviews),
     )

@@ -48,6 +48,13 @@ symbol = "BTC-USD" # Yahoo, for the 350d+ history it needs
 amber = 90         # 111d MA as % of 2x the 350d MA
 red = 100          # the cross
 
+[signals.attention]                # retail interest, like Google Trends but with a free official API
+enabled = true
+articles = ["Bitcoin", "Cryptocurrency"]   # English Wikipedia page titles
+avg_days = 7       # smooths out one-day news spikes
+amber = 2          # 7d avg pageviews as a multiple of the 1-year median
+red = 3            # past tops: 3-10x; the 2020 and 2022 crashes stayed near 1x
+
 [signals.fear_greed]
 enabled = true
 amber = 60         # greed building
@@ -73,3 +80,11 @@ series = "DGS10"   # US 10-year Treasury yield
 lookback_days = 30
 amber = 25         # rise in basis points over the lookback
 red = 50
+
+[signals.vix]                      # zones from @AskLivermore's VIX cheat sheet (x.com/AskLivermore, Jul 2026)
+enabled = true
+symbol = "^VIX"    # Yahoo
+amber = 17         # hold zone, but close to complacency
+red = 15           # sell zone: reduce exposure, rotate to defensives
+scale_in = 25      # 25-35: start scaling in
+buy = 35           # 35+: buy aggressively

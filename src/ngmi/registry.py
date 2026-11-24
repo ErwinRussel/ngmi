@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from ngmi.config import Config, Positions
 from ngmi.models import Signal, SignalError
-from ngmi.rules import drawdown, fear_greed, funding, liquidity, moving_average, pi_cycle, plan, rates, weekly_rsi
+from ngmi.rules import attention, drawdown, fear_greed, funding, liquidity, moving_average, pi_cycle, plan, rates, vix, weekly_rsi
 from ngmi.sources import Sources, memoized
 
 CRYPTO_TICKERS = {"bitcoin": "BTC", "ethereum": "ETH", "solana": "SOL", "ripple": "XRP", "dogecoin": "DOGE"}
@@ -109,6 +109,11 @@ SPECS: list[SignalSpec] = [
                lambda c: c.signals.pi_cycle.enabled,
                lambda c, s: [Job("pi_cycle", "BTC · Pi Cycle Top",
                                  lambda: pi_cycle.evaluate(s.stocks.fetch(c.signals.pi_cycle.symbol), c.signals.pi_cycle))]),
+    SignalSpec("attention", "Retail attention: Wikipedia pageviews vs 1y normal",
+               lambda c: c.signals.attention.enabled,
+               lambda c, s: [Job(f"attention:{a}", f"{a} · attention",
+                                 lambda a=a: attention.evaluate(s.pageviews.fetch(a), c.signals.attention, a))
+                             for a in c.signals.attention.articles]),
     SignalSpec("fear_greed", "Crypto Fear & Greed",
                lambda c: c.signals.fear_greed.enabled,
                lambda c, s: [Job("fear_greed", "Crypto Fear & Greed",
@@ -125,6 +130,10 @@ SPECS: list[SignalSpec] = [
                lambda c: c.signals.rates.enabled,
                lambda c, s: [Job("rates", "Rates",
                                  lambda: rates.evaluate(s.fred.fetch(c.signals.rates.series), c.signals.rates))]),
+    SignalSpec("vix", "VIX zones, after @AskLivermore (Yahoo ^VIX)",
+               lambda c: c.signals.vix.enabled,
+               lambda c, s: [Job("vix", "VIX",
+                                 lambda: vix.evaluate(s.stocks.fetch(c.signals.vix.symbol), c.signals.vix))]),
 ]
 
 

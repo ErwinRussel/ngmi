@@ -12,7 +12,7 @@ def test_demo_sources_produce_every_tile():
         "drawdown:bitcoin", "drawdown:ethereum", "drawdown:solana", "drawdown:NVDA",
         "trend:bitcoin", "trend:ethereum", "trend:solana", "trend:NVDA", "trend:GC=F", "trend:SI=F",
         "rsi:bitcoin", "rsi:ethereum", "rsi:solana", "rsi:NVDA", "pi_cycle",
-        "fear_greed", "funding", "liquidity", "rates",
+        "attention:Bitcoin", "attention:Cryptocurrency", "fear_greed", "funding", "liquidity", "rates", "vix",
     ]
     assert all(isinstance(r, Signal) for r in results)
     assert {r.status for r in results} == {"green", "amber", "red"}
@@ -26,6 +26,7 @@ def test_one_failing_position_does_not_hide_the_others():
         stocks=MockSymbolAdapter({}),
         funding=MockSymbolAdapter({}),
         fred=MockSymbolAdapter({}),
+        pageviews=MockSymbolAdapter({}),
     )
     cfg = Config(positions=Positions(crypto=["bitcoin"], stocks=["NOPE"]))
     by_id = {r.id: r for r in run_all(cfg, sources)}
